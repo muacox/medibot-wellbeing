@@ -62,9 +62,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Geist", "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
-        serif: ["Fraunces", "Times New Roman", "serif"],
-        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+        sans: ["Poppins", "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["Playfair Display", "Georgia", "Times New Roman", "serif"],
       },
       backgroundImage: {
         "gradient-hero": "var(--gradient-hero)",
