@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Bot, Send, Loader2, Sparkles, User, AlertCircle } from "lucide-react";
+import { Bot, Send, Loader2, Sparkles, User, AlertCircle, ArrowLeft, Plus, Activity } from "lucide-react";
 import { toast } from "sonner";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -98,33 +97,51 @@ const Chat = () => {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
   return (
-    <div className="min-h-screen mesh-bg relative overflow-hidden">
-      <Navbar />
-      <div className="absolute top-20 -right-32 w-[500px] h-[500px] bg-primary/20 animate-blob" />
-      <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] bg-accent/20 animate-blob" style={{ animationDelay: "6s" }} />
-
-      <main className="relative pt-24 pb-32 px-4 max-w-3xl mx-auto h-screen flex flex-col">
-        <div className="mb-4 animate-fade-up shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-hero flex items-center justify-center shadow-glow">
-              <Bot className="w-5 h-5 text-primary-foreground" />
+    <div className="h-[100dvh] flex flex-col bg-background">
+      {/* App-style header */}
+      <header className="shrink-0 bg-background border-b border-border">
+        <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
+          <button onClick={() => navigate("/dashboard")} className="w-9 h-9 rounded-full hover:bg-secondary flex items-center justify-center transition-colors" aria-label="Voltar">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2.5">
+            <div className="relative">
+              <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
+                <Bot className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success border-2 border-background" />
             </div>
-            <div>
-              <h1 className="font-serif text-2xl">MedicTech <span className="text-gradient italic">AI</span></h1>
-              <p className="text-xs text-muted-foreground">Triagem conversacional · não substitui médico</p>
+            <div className="leading-tight">
+              <div className="font-semibold text-sm">MedicTech AI</div>
+              <div className="text-[11px] text-muted-foreground">Online · Triagem médica</div>
             </div>
           </div>
+          <button onClick={() => setMessages([])} className="w-9 h-9 rounded-full hover:bg-secondary flex items-center justify-center transition-colors" aria-label="Nova conversa">
+            <Plus className="w-5 h-5" />
+          </button>
         </div>
+      </header>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto glass-strong rounded-3xl p-4 md:p-6 space-y-4 mb-4">
+      {/* Messages area */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-secondary/30">
+        <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
           {messages.length === 0 && (
-            <div className="text-center py-8 animate-fade-up">
-              <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
-              <h2 className="font-serif text-2xl mb-2">Como posso ajudar hoje?</h2>
-              <p className="text-muted-foreground text-sm mb-6">Descreva sintomas ou faça uma pergunta sobre saúde.</p>
+            <div className="text-center py-10 animate-fade-up">
+              <div className="w-16 h-16 rounded-full bg-primary mx-auto mb-4 flex items-center justify-center shadow-soft">
+                <Activity className="w-8 h-8 text-primary-foreground" strokeWidth={2} />
+              </div>
+              <h2 className="font-serif text-2xl mb-2 text-foreground">Como posso ajudar hoje?</h2>
+              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">
+                Descreva os seus sintomas e receba orientação inicial baseada em IA.
+              </p>
               <div className="grid sm:grid-cols-2 gap-2 max-w-xl mx-auto">
                 {SUGGESTIONS.map((s, i) => (
-                  <button key={i} onClick={() => send(s)} className="glass rounded-2xl p-3 text-left text-sm hover:shadow-glow transition text-foreground/80">
+                  <button
+                    key={i}
+                    onClick={() => send(s)}
+                    className="bg-background border border-border rounded-xl p-3 text-left text-sm hover:border-primary hover:shadow-soft transition-all text-foreground/80"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-primary inline mr-1.5" />
                     {s}
                   </button>
                 ))}
@@ -133,38 +150,51 @@ const Chat = () => {
           )}
 
           {messages.map((m, i) => (
-            <div key={i} className={`flex gap-3 animate-fade-up ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-              <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center ${m.role === "user" ? "bg-foreground/10" : "bg-gradient-hero shadow-soft"}`}>
-                {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4 text-primary-foreground" />}
+            <div key={i} className={`flex gap-2.5 animate-fade-up ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+              <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center mt-0.5 ${m.role === "user" ? "bg-foreground text-background" : "bg-primary text-primary-foreground"}`}>
+                {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
               </div>
-              <div className={`rounded-2xl px-4 py-3 max-w-[85%] text-sm leading-relaxed whitespace-pre-wrap ${m.role === "user" ? "bg-gradient-hero text-primary-foreground" : "glass"}`}>
+              <div className={`rounded-2xl px-4 py-2.5 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${
+                m.role === "user"
+                  ? "bg-primary text-primary-foreground rounded-tr-sm"
+                  : "bg-background border border-border rounded-tl-sm"
+              }`}>
                 {m.content || <Loader2 className="w-4 h-4 animate-spin" />}
               </div>
             </div>
           ))}
         </div>
+      </div>
 
+      {/* Input bar */}
+      <div className="shrink-0 bg-background border-t border-border safe-bottom">
         <form
           onSubmit={(e) => { e.preventDefault(); send(); }}
-          className="glass-strong rounded-3xl p-2 flex items-end gap-2 shrink-0"
+          className="max-w-4xl mx-auto px-3 py-3 flex items-end gap-2"
         >
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-            placeholder="Descreva o sintoma..."
-            className="flex-1 resize-none border-0 bg-transparent focus-visible:ring-0 min-h-[44px] max-h-32"
-            rows={1}
-          />
-          <Button type="submit" disabled={streaming || !input.trim()} size="icon" className="rounded-2xl h-11 w-11 bg-gradient-hero hover:opacity-90 shadow-glow border-0 shrink-0">
+          <div className="flex-1 bg-secondary rounded-2xl flex items-end">
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+              placeholder="Descreva o sintoma..."
+              className="flex-1 resize-none border-0 bg-transparent focus-visible:ring-0 min-h-[44px] max-h-32 text-sm"
+              rows={1}
+            />
+          </div>
+          <Button
+            type="submit"
+            disabled={streaming || !input.trim()}
+            size="icon"
+            className="rounded-full h-11 w-11 bg-primary text-primary-foreground hover:bg-primary/90 border-0 shrink-0 shadow-soft"
+          >
             {streaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>
         </form>
-
-        <p className="text-[11px] text-muted-foreground text-center mt-2 flex items-center justify-center gap-1.5">
-          <AlertCircle className="w-3 h-3" /> O MedicTech AI é uma ferramenta de triagem e não substitui avaliação médica.
+        <p className="text-[10px] text-muted-foreground text-center pb-2 px-4 flex items-center justify-center gap-1">
+          <AlertCircle className="w-3 h-3" /> Ferramenta de triagem · não substitui avaliação médica.
         </p>
-      </main>
+      </div>
     </div>
   );
 };
