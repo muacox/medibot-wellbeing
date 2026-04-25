@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          age: number | null
+          created_at: string
+          full_name: string | null
+          gender: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string
+          full_name?: string | null
+          gender?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          age?: number | null
+          created_at?: string
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      symptom_analyses: {
+        Row: {
+          age: number | null
+          created_at: string
+          duration: string | null
+          gender: string | null
+          id: string
+          possible_conditions: Json | null
+          recommendations: Json | null
+          severity: string | null
+          symptoms: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string
+          duration?: string | null
+          gender?: string | null
+          id?: string
+          possible_conditions?: Json | null
+          recommendations?: Json | null
+          severity?: string | null
+          symptoms: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          created_at?: string
+          duration?: string | null
+          gender?: string | null
+          id?: string
+          possible_conditions?: Json | null
+          recommendations?: Json | null
+          severity?: string | null
+          symptoms?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
