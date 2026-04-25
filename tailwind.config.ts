@@ -62,8 +62,9 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
-        serif: ['"Instrument Serif"', "serif"],
+        sans: ["Geist", "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["Fraunces", "Times New Roman", "serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       backgroundImage: {
         "gradient-hero": "var(--gradient-hero)",
