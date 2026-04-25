@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Bot, Send, Loader2, Sparkles, User, AlertCircle, ArrowLeft, Plus, Activity } from "lucide-react";
+import { Send, Loader2, User, AlertCircle, ArrowLeft, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const SUGGESTIONS = [
-  "Estou com dor de cabeça há 3 dias e febre baixa",
-  "Tosse seca persistente, o que pode ser?",
-  "Dor abdominal no lado direito após comer",
-  "Como aliviar enxaqueca em casa?",
+  "Estou com dor de cabeça e febre baixa há 3 dias",
+  "Tenho tosse seca persistente, o que pode ser?",
+  "Sinto dor abdominal no lado direito após comer",
+  "Como posso aliviar uma enxaqueca em casa?",
 ];
 
 const Chat = () => {
@@ -45,9 +45,9 @@ const Chat = () => {
         body: JSON.stringify({ messages: next }),
       });
 
-      if (resp.status === 429) { toast.error("Muitas requisições. Tente em instantes."); setStreaming(false); return; }
-      if (resp.status === 402) { toast.error("Créditos de IA esgotados."); setStreaming(false); return; }
-      if (!resp.ok || !resp.body) { toast.error("Erro ao conectar com a IA"); setStreaming(false); return; }
+      if (resp.status === 429) { toast.error("Muitas requisições. Aguarde."); setStreaming(false); return; }
+      if (resp.status === 402) { toast.error("Créditos esgotados."); setStreaming(false); return; }
+      if (!resp.ok || !resp.body) { toast.error("Erro ao conectar."); setStreaming(false); return; }
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
@@ -87,8 +87,8 @@ const Chat = () => {
           }
         }
       }
-    } catch (e: any) {
-      toast.error(e.message || "Erro");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erro");
     } finally {
       setStreaming(false);
     }
@@ -98,50 +98,47 @@ const Chat = () => {
 
   return (
     <div className="h-[100dvh] flex flex-col bg-background">
-      {/* App-style header */}
-      <header className="shrink-0 bg-background border-b border-border">
-        <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
-          <button onClick={() => navigate("/dashboard")} className="w-9 h-9 rounded-full hover:bg-secondary flex items-center justify-center transition-colors" aria-label="Voltar">
+      {/* Header app */}
+      <header className="shrink-0 bg-primary text-primary-foreground border-b border-primary/30">
+        <div className="container-x flex items-center justify-between h-14">
+          <button onClick={() => navigate("/dashboard")} className="w-9 h-9 flex items-center justify-center hover:bg-background/10" aria-label="Voltar">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2.5">
-            <div className="relative">
-              <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-                <Bot className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success border-2 border-background" />
+            <div className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center">
+              <Plus className="w-4 h-4" strokeWidth={2.5} />
             </div>
             <div className="leading-tight">
-              <div className="font-semibold text-sm">MedicTech AI</div>
-              <div className="text-[11px] text-muted-foreground">Online · Triagem médica</div>
+              <div className="font-serif text-sm uppercase tracking-wider">MedicTech</div>
+              <div className="text-[10px] text-primary-foreground/70 uppercase tracking-wider">Assistente · Online</div>
             </div>
           </div>
-          <button onClick={() => setMessages([])} className="w-9 h-9 rounded-full hover:bg-secondary flex items-center justify-center transition-colors" aria-label="Nova conversa">
-            <Plus className="w-5 h-5" />
+          <button onClick={() => setMessages([])} className="text-xs uppercase tracking-wider hover:underline" aria-label="Nova conversa">
+            Nova
           </button>
         </div>
       </header>
 
-      {/* Messages area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-secondary/30">
-        <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+      {/* Mensagens */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-secondary/40">
+        <div className="container-x py-6 space-y-4">
           {messages.length === 0 && (
-            <div className="text-center py-10 animate-fade-up">
-              <div className="w-16 h-16 rounded-full bg-primary mx-auto mb-4 flex items-center justify-center shadow-soft">
-                <Activity className="w-8 h-8 text-primary-foreground" strokeWidth={2} />
+            <div className="text-center py-10 animate-fade-up max-w-xl mx-auto">
+              <div className="w-14 h-14 rounded-full border-2 border-primary mx-auto mb-5 flex items-center justify-center">
+                <Plus className="w-7 h-7 text-primary" strokeWidth={2} />
               </div>
-              <h2 className="font-serif text-2xl mb-2 text-foreground">Como posso ajudar hoje?</h2>
-              <p className="text-muted-foreground text-sm mb-8 max-w-sm mx-auto">
-                Descreva os seus sintomas e receba orientação inicial baseada em IA.
+              <p className="uppercase tracking-[0.25em] text-xs mb-2 text-primary">Triagem</p>
+              <h2 className="font-serif text-2xl mb-3">Como posso ajudar hoje?</h2>
+              <p className="text-muted-foreground text-sm mb-8">
+                Descreva os seus sintomas. Esta avaliação não substitui consulta médica.
               </p>
-              <div className="grid sm:grid-cols-2 gap-2 max-w-xl mx-auto">
+              <div className="grid sm:grid-cols-2 gap-2">
                 {SUGGESTIONS.map((s, i) => (
                   <button
                     key={i}
                     onClick={() => send(s)}
-                    className="bg-background border border-border rounded-xl p-3 text-left text-sm hover:border-primary hover:shadow-soft transition-all text-foreground/80"
+                    className="bg-background border border-border p-3 text-left text-sm hover:border-primary transition-colors"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-primary inline mr-1.5" />
                     {s}
                   </button>
                 ))}
@@ -152,12 +149,12 @@ const Chat = () => {
           {messages.map((m, i) => (
             <div key={i} className={`flex gap-2.5 animate-fade-up ${m.role === "user" ? "flex-row-reverse" : ""}`}>
               <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center mt-0.5 ${m.role === "user" ? "bg-foreground text-background" : "bg-primary text-primary-foreground"}`}>
-                {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                {m.role === "user" ? <User className="w-4 h-4" /> : <Plus className="w-4 h-4" strokeWidth={2.5} />}
               </div>
-              <div className={`rounded-2xl px-4 py-2.5 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${
+              <div className={`px-4 py-2.5 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap ${
                 m.role === "user"
-                  ? "bg-primary text-primary-foreground rounded-tr-sm"
-                  : "bg-background border border-border rounded-tl-sm"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background border border-border"
               }`}>
                 {m.content || <Loader2 className="w-4 h-4 animate-spin" />}
               </div>
@@ -166,27 +163,25 @@ const Chat = () => {
         </div>
       </div>
 
-      {/* Input bar */}
-      <div className="shrink-0 bg-background border-t border-border safe-bottom">
+      {/* Input */}
+      <div className="shrink-0 bg-background border-t border-border">
         <form
           onSubmit={(e) => { e.preventDefault(); send(); }}
-          className="max-w-4xl mx-auto px-3 py-3 flex items-end gap-2"
+          className="container-x py-3 flex items-end gap-2"
         >
-          <div className="flex-1 bg-secondary rounded-2xl flex items-end">
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-              placeholder="Descreva o sintoma..."
-              className="flex-1 resize-none border-0 bg-transparent focus-visible:ring-0 min-h-[44px] max-h-32 text-sm"
-              rows={1}
-            />
-          </div>
+          <Textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+            placeholder="Descreva o sintoma..."
+            className="flex-1 resize-none bg-secondary border-0 focus-visible:ring-1 focus-visible:ring-primary min-h-[44px] max-h-32 text-sm rounded-none"
+            rows={1}
+          />
           <Button
             type="submit"
             disabled={streaming || !input.trim()}
             size="icon"
-            className="rounded-full h-11 w-11 bg-primary text-primary-foreground hover:bg-primary/90 border-0 shrink-0 shadow-soft"
+            className="rounded-none h-11 w-11 bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
           >
             {streaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>

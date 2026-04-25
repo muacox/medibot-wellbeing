@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, Mail, Lock, User, Activity, ArrowLeft, Stethoscope, ShieldCheck, HeartPulse } from "lucide-react";
+import { Loader2, ArrowLeft, Plus, Phone } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const AuthPage = () => {
@@ -30,15 +30,15 @@ const AuthPage = () => {
           options: { emailRedirectTo: `${window.location.origin}/dashboard`, data: { full_name: name } },
         });
         if (error) throw error;
-        toast.success("Conta criada! Você já pode acessar.");
+        toast.success("Conta criada com sucesso.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success("Bem-vindo de volta!");
+        toast.success("Bem-vindo de volta.");
       }
       navigate("/dashboard");
-    } catch (err: any) {
-      toast.error(err.message || "Erro ao autenticar");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao autenticar");
     } finally {
       setLoading(false);
     }
@@ -46,109 +46,78 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-background">
-      {/* Left — brand panel (institutional) */}
-      <aside className="md:w-1/2 lg:w-[55%] bg-foreground text-background relative overflow-hidden flex flex-col justify-between p-6 md:p-12 min-h-[200px] md:min-h-screen">
-        <div className="absolute -top-32 -right-20 w-[420px] h-[420px] bg-primary/30 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -left-20 w-[380px] h-[380px] bg-primary/20 rounded-full blur-3xl" />
-
-        <Link to="/" className="relative inline-flex items-center gap-2 text-background hover:text-primary transition-colors w-fit">
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm font-medium">Voltar ao início</span>
+      {/* Painel institucional */}
+      <aside className="md:w-1/2 bg-primary text-primary-foreground p-6 md:p-12 flex flex-col justify-between min-h-[180px] md:min-h-screen">
+        <Link to="/" className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground text-sm w-fit">
+          <ArrowLeft className="w-4 h-4" /> Voltar ao início
         </Link>
 
-        <div className="relative hidden md:block max-w-md">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-              <Activity className="w-6 h-6 text-primary-foreground" strokeWidth={2.5} />
-            </div>
-            <span className="font-bold text-2xl text-background">Medic<span className="text-primary">Tech</span></span>
+        <div className="hidden md:block max-w-md">
+          <div className="w-14 h-14 rounded-full border-2 border-background flex items-center justify-center mb-8">
+            <Plus className="w-7 h-7" strokeWidth={2.5} />
           </div>
-
-          <h2 className="font-serif text-3xl lg:text-4xl leading-tight mb-4">
-            Saúde inteligente,<br />ao seu alcance.
+          <p className="uppercase tracking-[0.25em] text-xs mb-3 text-primary-foreground/80">MedicTech</p>
+          <h2 className="font-serif text-3xl lg:text-4xl leading-tight mb-5">
+            Acesso à sua área pessoal de saúde.
           </h2>
-          <p className="text-background/70 leading-relaxed mb-10">
-            Triagem médica baseada em inteligência artificial. Confidencial, rápida e segura.
+          <p className="text-primary-foreground/80 leading-relaxed mb-10">
+            Marque consultas, consulte o seu histórico e fale com o nosso assistente.
           </p>
-
-          <div className="space-y-4">
-            {[
-              { icon: Stethoscope, t: "Análise de sintomas em segundos" },
-              { icon: ShieldCheck, t: "Os seus dados estão protegidos" },
-              { icon: HeartPulse, t: "Recomendações práticas e claras" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-3 text-background/85">
-                <div className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center shrink-0">
-                  <item.icon className="w-4 h-4 text-primary" />
-                </div>
-                <span className="text-sm">{item.t}</span>
-              </div>
-            ))}
+          <div className="border-t border-background/20 pt-6 text-sm">
+            <p className="text-primary-foreground/70 mb-1">Central de atendimento</p>
+            <p className="flex items-center gap-2 font-medium"><Phone className="w-4 h-4" /> (+244) 923 000 000</p>
           </div>
         </div>
 
-        <p className="relative text-xs text-background/50 hidden md:block">
+        <p className="hidden md:block text-xs text-primary-foreground/50">
           © {new Date().getFullYear()} MedicTech · Todos os direitos reservados
         </p>
       </aside>
 
-      {/* Right — form */}
-      <main className="flex-1 flex items-center justify-center p-6 md:p-10">
+      {/* Formulário */}
+      <main className="flex-1 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
-          <div className="md:hidden flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Activity className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
+          <div className="md:hidden flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center">
+              <Plus className="w-5 h-5 text-primary" strokeWidth={2.5} />
             </div>
-            <span className="font-bold text-xl">Medic<span className="text-primary">Tech</span></span>
+            <span className="font-serif uppercase tracking-wider">MedicTech</span>
           </div>
 
-          <h1 className="font-serif text-3xl md:text-4xl mb-2 text-foreground">
+          <p className="uppercase tracking-[0.25em] text-xs text-primary mb-3">
+            {mode === "signup" ? "Novo utente" : "Área pessoal"}
+          </p>
+          <h1 className="font-serif text-3xl md:text-4xl mb-8">
             {mode === "signup" ? "Criar conta" : "Iniciar sessão"}
           </h1>
-          <p className="text-muted-foreground mb-8 text-sm">
-            {mode === "signup"
-              ? "Preencha os seus dados para começar."
-              : "Bem-vindo de volta. Aceda à sua conta."}
-          </p>
 
           <form onSubmit={submit} className="space-y-5">
             {mode === "signup" && (
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-medium">Nome completo</Label>
-                <div className="relative">
-                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} className="pl-10 h-12 rounded-lg" placeholder="O seu nome" />
-                </div>
+                <Label htmlFor="name" className="text-xs uppercase tracking-wider text-muted-foreground">Nome completo</Label>
+                <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} className="h-12 rounded-none border-x-0 border-t-0 border-b-2 border-border focus-visible:border-primary focus-visible:ring-0 px-0" placeholder="Insira o seu nome" />
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">E-mail</Label>
-              <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 h-12 rounded-lg" placeholder="exemplo@email.com" />
-              </div>
+              <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground">E-mail</Label>
+              <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 rounded-none border-x-0 border-t-0 border-b-2 border-border focus-visible:border-primary focus-visible:ring-0 px-0" placeholder="exemplo@email.com" />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-medium">Palavra-passe</Label>
-                {mode === "login" && (
-                  <button type="button" className="text-xs text-muted-foreground hover:text-primary">Esqueceu?</button>
-                )}
+                <Label htmlFor="password" className="text-xs uppercase tracking-wider text-muted-foreground">Palavra-passe</Label>
+                {mode === "login" && <button type="button" className="text-xs text-muted-foreground hover:text-primary">Esqueceu?</button>}
               </div>
-              <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 h-12 rounded-lg" placeholder="Mínimo 6 caracteres" />
-              </div>
+              <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="h-12 rounded-none border-x-0 border-t-0 border-b-2 border-border focus-visible:border-primary focus-visible:ring-0 px-0" placeholder="Mínimo 6 caracteres" />
             </div>
 
-            <Button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base shadow-soft border-0 rounded-lg">
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (mode === "signup" ? "Criar conta" : "Entrar")}
+            <Button type="submit" disabled={loading} className="w-full h-12 rounded-none bg-primary text-primary-foreground hover:bg-primary/90 uppercase tracking-wider text-xs mt-8">
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (mode === "signup" ? "Criar Conta" : "Entrar")}
             </Button>
           </form>
 
-          <div className="mt-8 text-center text-sm text-muted-foreground">
-            {mode === "signup" ? "Já tem conta?" : "Não tem conta?"}{" "}
-            <button onClick={() => setMode(mode === "signup" ? "login" : "signup")} className="text-primary font-semibold hover:underline">
+          <div className="mt-10 text-center text-sm text-muted-foreground">
+            {mode === "signup" ? "Já tem conta?" : "Ainda não tem conta?"}{" "}
+            <button onClick={() => setMode(mode === "signup" ? "login" : "signup")} className="text-primary font-medium hover:underline ml-1">
               {mode === "signup" ? "Iniciar sessão" : "Registar-se"}
             </button>
           </div>
