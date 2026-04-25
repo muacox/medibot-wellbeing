@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { LogIn, LayoutDashboard, LogOut } from "lucide-react";
+import { LogIn, LayoutDashboard, LogOut, MessageSquareText } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Navbar = () => {
@@ -17,6 +17,9 @@ export const Navbar = () => {
             <>
               <Button variant="ghost" size="sm" className="rounded-full hidden sm:flex" onClick={() => navigate("/dashboard")}>
                 <LayoutDashboard className="w-4 h-4 mr-1.5" /> Painel
+              </Button>
+              <Button variant="ghost" size="sm" className="rounded-full hidden sm:flex" onClick={() => navigate("/chat")}>
+                <MessageSquareText className="w-4 h-4 mr-1.5" /> Chat IA
               </Button>
               <Button size="sm" variant="ghost" className="rounded-full" onClick={async () => { await signOut(); navigate("/"); }}>
                 <LogOut className="w-4 h-4" />
