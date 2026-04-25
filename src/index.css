@@ -82,13 +82,11 @@
 
 @layer base {
   * { @apply border-border; }
-  html { font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; letter-spacing: -0.011em; }
+  html { font-family: 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: 'ss01', 'cv11', 'cv02';
   }
-  .font-serif { font-family: 'Fraunces', 'Times New Roman', serif; letter-spacing: -0.02em; }
-  .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .font-serif { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; }
 }
 
 @layer components {
