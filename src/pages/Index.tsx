@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/Navbar";
+import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -227,5 +228,4 @@ const Index = () => {
   );
 };
 
-import { Logo } from "@/components/Logo";
 export default Index;
