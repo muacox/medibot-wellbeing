@@ -7,7 +7,14 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { messages } = await req.json();
+    const { messages, model } = await req.json();
+    const ALLOWED = new Set([
+      "google/gemini-3-flash-preview",
+      "google/gemini-2.5-pro",
+      "openai/gpt-5-mini",
+      "openai/gpt-5",
+    ]);
+    const selectedModel = ALLOWED.has(model) ? model : "google/gemini-3-flash-preview";
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY não configurada");
 
@@ -27,7 +34,7 @@ Regras:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: selectedModel,
         messages: [{ role: "system", content: systemPrompt }, ...messages],
         stream: true,
       }),

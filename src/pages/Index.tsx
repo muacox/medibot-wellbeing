@@ -7,7 +7,7 @@ import {
   Stethoscope, Heart, Baby, Brain, Eye, Bone, Activity, Pill,
   Phone, Mail, MapPin, Clock, ChevronRight, Plus, Facebook, Instagram, Linkedin,
   Sparkles, MessageSquareText, FileText, ShieldCheck, Bot, ScanLine,
-  ClipboardList, HeartPulse, AlertTriangle,
+  ClipboardList, HeartPulse, AlertTriangle, Cpu, Zap, Gauge, Atom,
 } from "lucide-react";
 
 const Index = () => {
@@ -48,6 +48,13 @@ const Index = () => {
     { icon: Stethoscope, t: "Clínica Geral" },
     { icon: Activity, t: "Fisioterapia" },
     { icon: Pill, t: "Farmácia" },
+  ];
+
+  const aiModels = [
+    { icon: Sparkles, name: "Gemini Flash", tag: "Rápido", d: "Equilíbrio entre velocidade e qualidade. Ideal para triagem geral." },
+    { icon: Cpu, name: "Gemini Pro", tag: "Avançado", d: "Raciocínio profundo para análises clínicas complexas." },
+    { icon: Zap, name: "GPT-5 Mini", tag: "Eficiente", d: "Respostas rápidas e precisas para perguntas diretas." },
+    { icon: Atom, name: "GPT-5", tag: "Premium", d: "Modelo mais poderoso, com nuance médica e contexto longo." },
   ];
 
   return (
@@ -151,9 +158,9 @@ const Index = () => {
               <div
                 key={i}
                 style={{ animationDelay: `${i * 80}ms` }}
-                className="bg-background border border-border p-6 group hover:border-primary hover:shadow-soft hover:-translate-y-1 transition-all duration-300 animate-fade-up flex flex-col"
+                className="liquid-glass rounded-2xl p-6 group hover:shadow-glow hover:-translate-y-1 transition-all duration-300 animate-fade-up flex flex-col"
               >
-                <div className="w-11 h-11 bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
+                <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
                   <f.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" strokeWidth={1.8} />
                 </div>
                 <h3 className="font-serif text-xl mb-2">{f.t}</h3>
@@ -170,8 +177,52 @@ const Index = () => {
         </div>
       </section>
 
+      {/* 4 MODELOS DE IA */}
+      <section className="py-20 md:py-28 bg-background">
+        <div className="container-x">
+          <div className="text-center mb-14 max-w-2xl mx-auto animate-fade-up">
+            <p className="uppercase tracking-[0.25em] text-xs mb-3 text-primary">Modelos disponíveis</p>
+            <h2 className="font-serif text-3xl md:text-5xl mb-4">4 Modelos de IA Médica</h2>
+            <p className="text-muted-foreground">
+              Escolha o modelo ideal no chat — do mais rápido ao mais preciso.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {aiModels.map((m, i) => (
+              <div
+                key={m.name}
+                style={{ animationDelay: `${i * 100}ms` }}
+                className="liquid-glass rounded-2xl p-6 group hover:-translate-y-1 hover:shadow-glow transition-all duration-300 animate-fade-up"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors">
+                    <m.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" strokeWidth={1.8} />
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                    {m.tag}
+                  </span>
+                </div>
+                <h3 className="font-serif text-lg mb-2">{m.name}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{m.d}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10 animate-fade-up">
+            <Button
+              onClick={() => navigate(user ? "/chat" : "/auth")}
+              size="lg"
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 uppercase tracking-wider text-xs h-12 px-8 shadow-soft hover:scale-105 transition-transform"
+            >
+              <MessageSquareText className="w-4 h-4 mr-2" /> Experimentar no Chat
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* SERVIÇOS */}
-      <section id="servicos" className="py-20 md:py-28 bg-background">
+      <section id="servicos" className="py-20 md:py-28 bg-secondary">
         <div className="container-x">
           <div className="text-center mb-14 max-w-2xl mx-auto animate-fade-up">
             <p className="uppercase tracking-[0.25em] text-xs mb-3 text-primary">Serviços</p>
@@ -196,7 +247,7 @@ const Index = () => {
       </section>
 
       {/* ESPECIALIDADES */}
-      <section id="especialidades" className="py-20 md:py-28 bg-secondary">
+      <section id="especialidades" className="py-20 md:py-28 bg-background">
         <div className="container-x">
           <div className="text-center mb-14 animate-fade-up">
             <p className="uppercase tracking-[0.25em] text-xs mb-3 text-primary">Especialidades</p>

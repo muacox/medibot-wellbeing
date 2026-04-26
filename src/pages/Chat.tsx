@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Loader2, User, AlertCircle, ArrowLeft, Plus } from "lucide-react";
+import { Send, Loader2, User, AlertCircle, ArrowLeft, Plus, Sparkles, Cpu, Zap, Atom, Check } from "lucide-react";
 import { toast } from "sonner";
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -15,12 +15,21 @@ const SUGGESTIONS = [
   "Como posso aliviar uma enxaqueca em casa?",
 ];
 
+const MODELS = [
+  { id: "google/gemini-3-flash-preview", name: "Gemini Flash", icon: Sparkles, tag: "Rápido" },
+  { id: "google/gemini-2.5-pro", name: "Gemini Pro", icon: Cpu, tag: "Avançado" },
+  { id: "openai/gpt-5-mini", name: "GPT-5 Mini", icon: Zap, tag: "Eficiente" },
+  { id: "openai/gpt-5", name: "GPT-5", icon: Atom, tag: "Premium" },
+];
+
 const Chat = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [model, setModel] = useState(MODELS[0].id);
+  const [modelOpen, setModelOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { if (!loading && !user) navigate("/auth"); }, [user, loading, navigate]);
@@ -42,7 +51,7 @@ const Chat = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: next, model }),
       });
 
       if (resp.status === 429) { toast.error("Muitas requisições. Aguarde."); setStreaming(false); return; }
@@ -96,27 +105,56 @@ const Chat = () => {
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
 
+  const currentModel = MODELS.find((m) => m.id === model) ?? MODELS[0];
+
   return (
     <div className="h-[100dvh] flex flex-col bg-background">
       {/* Header app */}
       <header className="shrink-0 bg-primary text-primary-foreground border-b border-primary/30">
         <div className="container-x flex items-center justify-between h-14">
-          <button onClick={() => navigate("/dashboard")} className="w-9 h-9 flex items-center justify-center hover:bg-background/10" aria-label="Voltar">
+          <button onClick={() => navigate("/dashboard")} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-background/15 transition-colors" aria-label="Voltar">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center">
-              <Plus className="w-4 h-4" strokeWidth={2.5} />
+          <button
+            onClick={() => setModelOpen((v) => !v)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background/15 hover:bg-background/25 transition-colors"
+          >
+            <currentModel.icon className="w-4 h-4" strokeWidth={2} />
+            <div className="leading-tight text-left">
+              <div className="text-xs font-medium uppercase tracking-wider">{currentModel.name}</div>
+              <div className="text-[9px] text-primary-foreground/70 uppercase tracking-wider">{currentModel.tag}</div>
             </div>
-            <div className="leading-tight">
-              <div className="font-serif text-sm uppercase tracking-wider">MedicTech</div>
-              <div className="text-[10px] text-primary-foreground/70 uppercase tracking-wider">Assistente · Online</div>
-            </div>
-          </div>
-          <button onClick={() => setMessages([])} className="text-xs uppercase tracking-wider hover:underline" aria-label="Nova conversa">
+          </button>
+          <button onClick={() => setMessages([])} className="text-xs uppercase tracking-wider hover:underline px-2" aria-label="Nova conversa">
             Nova
           </button>
         </div>
+
+        {/* Dropdown de modelos */}
+        {modelOpen && (
+          <div className="container-x">
+            <div className="liquid-glass rounded-2xl mt-1 p-2 animate-fade-up !text-foreground">
+              {MODELS.map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => { setModel(m.id); setModelOpen(false); toast.success(`Modelo: ${m.name}`); }}
+                  className={`w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-primary/10 transition-colors text-left ${
+                    model === m.id ? "bg-primary/10" : ""
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+                    <m.icon className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="flex-1 leading-tight">
+                    <div className="text-sm font-medium">{m.name}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{m.tag}</div>
+                  </div>
+                  {model === m.id && <Check className="w-4 h-4 text-primary" />}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Mensagens */}
