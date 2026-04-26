@@ -35,17 +35,17 @@ export const Navbar = () => {
   return (
     <>
       <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled ? "bg-background/95 backdrop-blur shadow-soft border-b border-border" : "bg-background/80 backdrop-blur-sm border-b border-transparent"
+        scrolled ? "liquid-glass shadow-soft" : "bg-background/70 backdrop-blur-md border-b border-white/30"
       }`}>
         <div className="container-x flex items-center justify-between h-16">
           <Link to="/" className="hover:opacity-80 transition-opacity"><Logo /></Link>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {user ? (
               <>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hidden md:inline-flex text-foreground hover:text-primary rounded-none uppercase text-xs tracking-wider"
+                  className="hidden md:inline-flex text-foreground hover:text-primary hover:bg-primary/10 rounded-full uppercase text-xs tracking-wider font-medium px-4"
                   onClick={() => navigate("/dashboard")}
                 >
                   <LayoutDashboard className="w-4 h-4 mr-1.5" /> Painel
@@ -53,15 +53,14 @@ export const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hidden md:inline-flex text-foreground hover:text-primary rounded-none uppercase text-xs tracking-wider"
+                  className="hidden md:inline-flex text-foreground hover:text-primary hover:bg-primary/10 rounded-full uppercase text-xs tracking-wider font-medium px-4"
                   onClick={() => navigate("/chat")}
                 >
                   <MessageSquareText className="w-4 h-4 mr-1.5" /> Chat IA
                 </Button>
                 <Button
-                  variant="outline"
                   size="sm"
-                  className="hidden sm:inline-flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none uppercase text-xs tracking-wider transition-all"
+                  className="hidden sm:inline-flex liquid-glass-btn !text-primary hover:!text-primary rounded-full uppercase text-xs tracking-wider font-medium px-4 h-9"
                   onClick={async () => { await signOut(); navigate("/"); }}
                 >
                   <LogOut className="w-4 h-4 mr-1.5" /> Sair
@@ -72,15 +71,14 @@ export const Navbar = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="hidden md:inline-flex text-foreground hover:text-primary rounded-none uppercase text-xs tracking-wider"
+                className="hidden md:inline-flex text-foreground hover:text-primary hover:bg-primary/10 rounded-full uppercase text-xs tracking-wider font-medium px-4"
                 onClick={() => navigate("/auth")}
               >
                 <LogIn className="w-4 h-4 mr-1.5" /> Entrar
               </Button>
               <Button
-                variant="outline"
                 size="sm"
-                className="hidden sm:inline-flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none uppercase text-xs tracking-wider transition-all hover:scale-105"
+                className="hidden sm:inline-flex bg-primary text-primary-foreground hover:bg-primary/90 rounded-full uppercase text-xs tracking-wider font-medium px-4 h-9 shadow-soft"
                 onClick={() => navigate("/auth?mode=signup")}
               >
                 <Calendar className="w-4 h-4 mr-1.5" /> Marcar Consulta
@@ -89,10 +87,10 @@ export const Navbar = () => {
             )}
             <button
               onClick={() => setOpen(true)}
-              className="w-10 h-10 flex items-center justify-center hover:bg-secondary transition-colors group"
+              className="w-10 h-10 rounded-full liquid-glass-btn flex items-center justify-center group"
               aria-label="Abrir menu"
             >
-              <Menu className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <Menu className="w-5 h-5 text-foreground group-hover:scale-110 transition-transform" />
             </button>
           </div>
         </div>
