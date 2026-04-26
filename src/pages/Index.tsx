@@ -7,8 +7,12 @@ import {
   Stethoscope, Heart, Baby, Brain, Eye, Bone, Activity, Pill,
   Phone, Mail, MapPin, Clock, ChevronRight, Plus, Facebook, Instagram, Linkedin,
   Sparkles, MessageSquareText, FileText, ShieldCheck, Bot, ScanLine,
-  ClipboardList, HeartPulse, AlertTriangle, Cpu, Zap, Gauge, Atom,
+  ClipboardList, HeartPulse, AlertTriangle,
 } from "lucide-react";
+import iconGeminiFlash from "@/assets/ai-gemini-flash.png";
+import iconGeminiPro from "@/assets/ai-gemini-pro.png";
+import iconGptMini from "@/assets/ai-gpt-mini.png";
+import iconGpt5 from "@/assets/ai-gpt-5.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -51,10 +55,10 @@ const Index = () => {
   ];
 
   const aiModels = [
-    { icon: Sparkles, name: "Gemini Flash", tag: "Rápido", d: "Equilíbrio entre velocidade e qualidade. Ideal para triagem geral." },
-    { icon: Cpu, name: "Gemini Pro", tag: "Avançado", d: "Raciocínio profundo para análises clínicas complexas." },
-    { icon: Zap, name: "GPT-5 Mini", tag: "Eficiente", d: "Respostas rápidas e precisas para perguntas diretas." },
-    { icon: Atom, name: "GPT-5", tag: "Premium", d: "Modelo mais poderoso, com nuance médica e contexto longo." },
+    { img: iconGeminiFlash, name: "Gemini Flash", tag: "Rápido", d: "Equilíbrio entre velocidade e qualidade. Ideal para triagem geral." },
+    { img: iconGeminiPro, name: "Gemini Pro", tag: "Avançado", d: "Raciocínio profundo para análises clínicas complexas." },
+    { img: iconGptMini, name: "GPT-5 Mini", tag: "Eficiente", d: "Respostas rápidas e precisas para perguntas diretas." },
+    { img: iconGpt5, name: "GPT-5", tag: "Premium", d: "Modelo mais poderoso, com nuance médica e contexto longo." },
   ];
 
   return (
@@ -196,9 +200,14 @@ const Index = () => {
                 className="liquid-glass rounded-2xl p-6 group hover:-translate-y-1 hover:shadow-glow transition-all duration-300 animate-fade-up"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors">
-                    <m.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" strokeWidth={1.8} />
-                  </div>
+                  <img
+                    src={m.img}
+                    alt={m.name}
+                    className="w-14 h-14 rounded-full bg-background shadow-soft group-hover:scale-110 transition-transform"
+                    loading="lazy"
+                    width={56}
+                    height={56}
+                  />
                   <span className="text-[10px] uppercase tracking-wider px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
                     {m.tag}
                   </span>
