@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { LogIn, LayoutDashboard, LogOut, MessageSquareText, Menu, X } from "lucide-react";
+import { LogIn, LayoutDashboard, LogOut, MessageSquareText, Menu, X, Calendar, User as UserIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 
@@ -9,11 +9,18 @@ export const Navbar = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const go = (to: string) => { setOpen(false); navigate(to); };
 
@@ -27,26 +34,65 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur border-b border-border">
+      <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        scrolled ? "bg-background/95 backdrop-blur shadow-soft border-b border-border" : "bg-background/80 backdrop-blur-sm border-b border-transparent"
+      }`}>
         <div className="container-x flex items-center justify-between h-16">
-          <Link to="/"><Logo /></Link>
-          <div className="flex items-center gap-2">
-            {!user && (
+          <Link to="/" className="hover:opacity-80 transition-opacity"><Logo /></Link>
+          <div className="flex items-center gap-1.5">
+            {user ? (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hidden md:inline-flex text-foreground hover:text-primary rounded-none uppercase text-xs tracking-wider"
+                  onClick={() => navigate("/dashboard")}
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-1.5" /> Painel
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="hidden md:inline-flex text-foreground hover:text-primary rounded-none uppercase text-xs tracking-wider"
+                  onClick={() => navigate("/chat")}
+                >
+                  <MessageSquareText className="w-4 h-4 mr-1.5" /> Chat IA
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:inline-flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none uppercase text-xs tracking-wider transition-all"
+                  onClick={async () => { await signOut(); navigate("/"); }}
+                >
+                  <LogOut className="w-4 h-4 mr-1.5" /> Sair
+                </Button>
+              </>
+            ) : (
+              <>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="hidden md:inline-flex text-foreground hover:text-primary rounded-none uppercase text-xs tracking-wider"
+                onClick={() => navigate("/auth")}
+              >
+                <LogIn className="w-4 h-4 mr-1.5" /> Entrar
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="hidden sm:inline-flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none uppercase text-xs tracking-wider"
-                onClick={() => navigate("/auth")}
+                className="hidden sm:inline-flex border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none uppercase text-xs tracking-wider transition-all hover:scale-105"
+                onClick={() => navigate("/auth?mode=signup")}
               >
-                Marcar Consulta
+                <Calendar className="w-4 h-4 mr-1.5" /> Marcar Consulta
               </Button>
+              </>
             )}
             <button
               onClick={() => setOpen(true)}
-              className="w-10 h-10 flex items-center justify-center hover:bg-secondary transition-colors"
+              className="w-10 h-10 flex items-center justify-center hover:bg-secondary transition-colors group"
               aria-label="Abrir menu"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-5 h-5 group-hover:scale-110 transition-transform" />
             </button>
           </div>
         </div>

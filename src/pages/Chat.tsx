@@ -151,12 +151,18 @@ const Chat = () => {
               <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center mt-0.5 ${m.role === "user" ? "bg-foreground text-background" : "bg-primary text-primary-foreground"}`}>
                 {m.role === "user" ? <User className="w-4 h-4" /> : <Plus className="w-4 h-4" strokeWidth={2.5} />}
               </div>
-              <div className={`px-4 py-2.5 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap ${
+              <div className={`px-4 py-2.5 max-w-[80%] text-sm leading-relaxed whitespace-pre-wrap shadow-soft ${
                 m.role === "user"
                   ? "bg-primary text-primary-foreground"
                   : "bg-background border border-border"
               }`}>
-                {m.content || <Loader2 className="w-4 h-4 animate-spin" />}
+                {m.content || (
+                  <span className="inline-flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse-soft" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse-soft" style={{ animationDelay: "0.2s" }} />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse-soft" style={{ animationDelay: "0.4s" }} />
+                  </span>
+                )}
               </div>
             </div>
           ))}
