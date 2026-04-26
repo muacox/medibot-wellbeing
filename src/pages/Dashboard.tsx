@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Sparkles, AlertTriangle, CheckCircle2, Activity, Brain, Clock, History, Trash2, Stethoscope } from "lucide-react";
+import { Loader2, Sparkles, AlertTriangle, CheckCircle2, Activity, Brain, Clock, History, Trash2, Stethoscope, MessageSquareText, Home, LogOut, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 type Condition = { name: string; probability: "alta" | "média" | "baixa"; description: string };
@@ -19,7 +19,7 @@ const probColor = (p: string) => p === "alta" ? "bg-destructive/15 text-destruct
 const urgencyStyle = (u: string) => u === "emergência" ? "from-destructive to-destructive/70" : u === "consulta breve" ? "from-warning to-warning/70" : "from-success to-success/70";
 
 const Dashboard = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const [symptoms, setSymptoms] = useState("");
   const [age, setAge] = useState("");
@@ -73,20 +73,56 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-secondary/30 relative overflow-hidden">
       <Navbar />
-      <div className="absolute top-20 -right-32 w-[500px] h-[500px] bg-primary/20 hidden" />
-      <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] bg-accent/20 hidden" style={{ animationDelay: "6s" }} />
+      <div className="absolute top-20 -right-32 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
 
       <main className="relative pt-28 pb-16 px-4 max-w-6xl mx-auto">
-        <div className="mb-8 animate-fade-up">
-          <h1 className="font-serif text-4xl md:text-5xl mb-2">Olá <span className="text-primary">{user?.email?.split("@")[0]}</span></h1>
-          <p className="text-muted-foreground">Descreva seus sintomas para receber uma análise prévia.</p>
+        <div className="mb-8 animate-fade-up flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <h1 className="font-serif text-4xl md:text-5xl mb-2">Olá <span className="text-primary">{user?.email?.split("@")[0]}</span></h1>
+            <p className="text-muted-foreground">Descreva seus sintomas para receber uma análise prévia.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => navigate("/")} variant="ghost" className="rounded-full hover:bg-primary/10 hover:text-primary uppercase text-xs tracking-wider">
+              <Home className="w-4 h-4 mr-1.5" /> Início
+            </Button>
+            <Button onClick={() => navigate("/chat")} className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 uppercase text-xs tracking-wider shadow-soft">
+              <MessageSquareText className="w-4 h-4 mr-1.5" /> Chat IA
+            </Button>
+            <Button onClick={async () => { await signOut(); navigate("/"); }} variant="outline" className="rounded-full liquid-glass-btn !text-primary border-0 uppercase text-xs tracking-wider">
+              <LogOut className="w-4 h-4 mr-1.5" /> Sair
+            </Button>
+          </div>
+        </div>
+
+        {/* Atalhos rápidos */}
+        <div className="grid sm:grid-cols-3 gap-3 mb-8 animate-fade-up">
+          {[
+            { icon: MessageSquareText, t: "Chat IA", d: "Conversar com o assistente", to: "/chat" },
+            { icon: History, t: "Histórico", d: `${history.length} análises`, to: "#historico" },
+            { icon: FileText, t: "Nova análise", d: "Descrever sintomas agora", to: "#form" },
+          ].map((a, i) => (
+            <button
+              key={i}
+              onClick={() => a.to.startsWith("#") ? document.getElementById(a.to.slice(1))?.scrollIntoView({ behavior: "smooth" }) : navigate(a.to)}
+              className="liquid-glass rounded-2xl p-4 flex items-center gap-3 text-left hover:-translate-y-0.5 hover:shadow-glow transition-all"
+            >
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <a.icon className="w-5 h-5 text-primary" />
+              </div>
+              <div className="leading-tight">
+                <div className="text-sm font-medium">{a.t}</div>
+                <div className="text-xs text-muted-foreground">{a.d}</div>
+              </div>
+            </button>
+          ))}
         </div>
 
         <div className="grid lg:grid-cols-5 gap-6">
           {/* Form */}
-          <form onSubmit={analyze} className="lg:col-span-3 bg-background border border-border shadow-soft rounded-none p-6 md:p-8 space-y-5 animate-fade-up">
+          <form id="form" onSubmit={analyze} className="lg:col-span-3 liquid-glass rounded-2xl p-6 md:p-8 space-y-5 animate-fade-up">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-9 h-9 rounded-none bg-primary flex items-center justify-center"><Stethoscope className="w-5 h-5 text-primary-foreground" /></div>
+              <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center"><Stethoscope className="w-5 h-5 text-primary-foreground" /></div>
               <h2 className="font-semibold text-xl">Nova análise</h2>
             </div>
 
@@ -138,13 +174,13 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <Button type="submit" disabled={analyzing} className="w-full rounded-none h-12 bg-primary hover:opacity-90  border-0 text-base">
+            <Button type="submit" disabled={analyzing} className="w-full rounded-full h-12 bg-primary hover:opacity-90 border-0 text-base shadow-soft">
               {analyzing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Analisando com IA...</> : <><Sparkles className="w-4 h-4 mr-2" /> Analisar sintomas</>}
             </Button>
           </form>
 
           {/* History */}
-          <aside className="lg:col-span-2 bg-background border border-border rounded-none p-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
+          <aside id="historico" className="lg:col-span-2 liquid-glass rounded-2xl p-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
             <div className="flex items-center gap-2 mb-4">
               <History className="w-5 h-5 text-primary" />
               <h2 className="font-semibold text-lg">Histórico</h2>
@@ -154,7 +190,7 @@ const Dashboard = () => {
             ) : (
               <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
                 {history.map((h) => (
-                  <div key={h.id} className="bg-background border border-border rounded-none p-3 group">
+                  <div key={h.id} className="bg-background/60 backdrop-blur border border-white/40 rounded-xl p-3 group">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm line-clamp-2">{h.symptoms}</p>
@@ -176,9 +212,9 @@ const Dashboard = () => {
         {/* Result */}
         {result && (
           <section className="mt-8 space-y-6 animate-fade-up">
-            <div className={`bg-background border border-border shadow-soft rounded-none p-6 border-l-4 border-primary`}>
+            <div className="liquid-glass rounded-2xl p-6 border-l-4 !border-l-primary">
               <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-none bg-gradient-to-br ${urgencyStyle(result.urgency)} flex items-center justify-center shadow-soft shrink-0`}>
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${urgencyStyle(result.urgency)} flex items-center justify-center shadow-soft shrink-0`}>
                   <AlertTriangle className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -190,14 +226,14 @@ const Dashboard = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-background border border-border shadow-soft rounded-none p-6">
+              <div className="liquid-glass rounded-2xl p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Brain className="w-5 h-5 text-primary" />
                   <h3 className="font-semibold text-lg">Possíveis condições</h3>
                 </div>
                 <div className="space-y-3">
                   {result.possible_conditions.map((c, i) => (
-                    <div key={i} className="bg-background border border-border rounded-none p-4">
+                    <div key={i} className="bg-background/60 backdrop-blur border border-white/40 rounded-xl p-4">
                       <div className="flex items-center justify-between gap-2 mb-1.5">
                         <h4 className="font-semibold">{c.name}</h4>
                         <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${probColor(c.probability)}`}>{c.probability}</span>
@@ -208,7 +244,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-background border border-border shadow-soft rounded-none p-6">
+              <div className="liquid-glass rounded-2xl p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Activity className="w-5 h-5 text-primary" />
                   <h3 className="font-semibold text-lg">Recomendações</h3>
